@@ -3,9 +3,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import decode from 'audio-decode';
-import { AudioBufferLike } from './types.js';
 
-async function decodeWithFfmpeg(filePath: string): Promise<AudioBufferLike> {
+async function decodeWithFfmpeg(filePath) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'audiodiff-'));
   const outPath = path.join(tmpDir, 'decoded.wav');
   try {
@@ -18,7 +17,7 @@ async function decodeWithFfmpeg(filePath: string): Promise<AudioBufferLike> {
     }
     const bytes = fs.readFileSync(outPath);
     const audio = await decode(bytes);
-    const channels: Float32Array[] = [];
+    const channels = [];
     for (let c = 0; c < audio.numberOfChannels; c++) channels.push(audio.getChannelData(c));
     return { sampleRate: audio.sampleRate, channels };
   } finally {
@@ -26,7 +25,7 @@ async function decodeWithFfmpeg(filePath: string): Promise<AudioBufferLike> {
   }
 }
 
-export async function readAudio(filePath: string, opts: { downmix: boolean; ffmpeg: boolean }): Promise<AudioBufferLike> {
+async function readAudio(filePath, opts) {
   const ext = path.extname(filePath).toLowerCase();
   const bytes = fs.readFileSync(filePath);
 
@@ -38,7 +37,7 @@ export async function readAudio(filePath: string, opts: { downmix: boolean; ffmp
   }
 
   const audio = await decode(bytes);
-  const channels: Float32Array[] = [];
+  const channels = [];
   for (let c = 0; c < audio.numberOfChannels; c++) channels.push(audio.getChannelData(c));
 
   if (channels.length > 2 && opts.downmix) {
@@ -50,3 +49,5 @@ export async function readAudio(filePath: string, opts: { downmix: boolean; ffmp
   if (channels.length > 2 && !opts.downmix) console.warn('Warning: >2 channels detected. Consider --downmix');
   return { sampleRate: audio.sampleRate, channels };
 }
+
+export { readAudio };

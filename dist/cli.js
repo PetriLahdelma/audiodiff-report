@@ -65,7 +65,8 @@ program
         console.error('Both inputs must be files or both must be directories');
         process.exit(exitCode.INVALID_ARGS);
       }
-      const files: Array<{ a: string; b: string }> = [];
+
+      const files = [];
 
       if (isDir) {
         const glob = merged.glob || '**/*.{wav,aiff,flac,mp3}';
