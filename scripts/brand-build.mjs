@@ -180,13 +180,14 @@ function buildGridLines(width, height, step = 80) {
 function pillGroup({ x, y, labels, fontSize = 24 }) {
   const paddingX = 18;
   const height = 40;
+  const textY = height / 2;
   let cursorX = x;
   const pills = labels.map((label) => {
     const width = Math.round(label.length * fontSize * 0.56 + paddingX * 2);
     const pill = `
       <g transform="translate(${cursorX} ${y})">
         <rect width="${width}" height="${height}" rx="20" fill="${system.panel}" stroke="${system.faint}" stroke-width="1" />
-        <text x="${paddingX}" y="26" font-size="${fontSize}" fill="${system.text}">${label}</text>
+        <text x="${paddingX}" y="${textY}" font-size="${fontSize}" fill="${system.text}" dominant-baseline="middle">${label}</text>
       </g>
     `;
     cursorX += width + 14;
@@ -291,12 +292,17 @@ function heroSvg() {
   const iconY = 220;
   const grid = buildGridLines(width, height, 80);
   const pills = pillGroup({ x: 760, y: 540, labels: config.pills });
+  const titleLines = Array.isArray(config.heroTitleLines) ? config.heroTitleLines : [config.name];
+  const titleSize = config.heroTitleSize ?? 72;
+  const titleLineHeight = config.heroTitleLineHeight ?? Math.round(titleSize * 1.05);
+  const titleY = config.heroTitleY ?? 320;
   const taglineLines = wrapLines(
     config.tagline,
     config.heroTaglineWidth ?? 720,
     config.heroTaglineSize ?? 30,
     config.heroTaglineLines ?? 2
   );
+  const taglineY = config.heroTaglineY ?? (titleY + titleLineHeight * titleLines.length + 24);
   const body = `
     <defs>
       <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 340) rotate(45) scale(420)">
@@ -310,10 +316,19 @@ function heroSvg() {
       ${grid}
     </g>
     ${iconGroup({ x: iconX, y: iconY, size: iconSize })}
-    <text x="760" y="320" font-size="72" font-weight="700" letter-spacing="-0.02em" fill="${system.text}">${config.name}</text>
     ${renderTextLines({
       x: 760,
-      y: 380,
+      y: titleY,
+      lines: titleLines,
+      fontSize: titleSize,
+      lineHeight: titleLineHeight,
+      fill: system.text,
+      weight: 700,
+      letterSpacing: "-0.02em"
+    })}
+    ${renderTextLines({
+      x: 760,
+      y: taglineY,
       lines: taglineLines,
       fontSize: config.heroTaglineSize ?? 30,
       lineHeight: config.heroTaglineLineHeight ?? 38,
@@ -331,12 +346,17 @@ function socialCardSvg() {
   const iconSize = 240;
   const grid = buildGridLines(width, height, 80);
   const pills = pillGroup({ x: 520, y: 420, labels: config.pills.slice(0, 2), fontSize: 22 });
+  const titleLines = Array.isArray(config.socialTitleLines) ? config.socialTitleLines : [config.name];
+  const titleSize = config.socialTitleSize ?? 60;
+  const titleLineHeight = config.socialTitleLineHeight ?? Math.round(titleSize * 1.05);
+  const titleY = config.socialTitleY ?? 270;
   const valueLines = wrapLines(
     config.value,
     config.socialValueWidth ?? 640,
     config.socialValueSize ?? 26,
     config.socialValueLines ?? 2
   );
+  const valueY = config.socialValueY ?? (titleY + titleLineHeight * titleLines.length + 22);
   const body = `
     <defs>
       <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
@@ -350,10 +370,19 @@ function socialCardSvg() {
       ${grid}
     </g>
     ${iconGroup({ x: 140, y: 200, size: iconSize })}
-    <text x="520" y="270" font-size="60" font-weight="700" letter-spacing="-0.02em" fill="${system.text}">${config.name}</text>
     ${renderTextLines({
       x: 520,
-      y: 330,
+      y: titleY,
+      lines: titleLines,
+      fontSize: titleSize,
+      lineHeight: titleLineHeight,
+      fill: system.text,
+      weight: 700,
+      letterSpacing: "-0.02em"
+    })}
+    ${renderTextLines({
+      x: 520,
+      y: valueY,
       lines: valueLines,
       fontSize: config.socialValueSize ?? 26,
       lineHeight: config.socialValueLineHeight ?? 32,
