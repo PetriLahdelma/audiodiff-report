@@ -1,14 +1,15 @@
 export default {
   name: "audiodiff-report",
-  tagline: "Alignment-aware audio diffs with CI gating and producer-friendly metrics.",
+  tagline: "Alignment-aware audio diffs with CI gating and producer-friendly reports.",
   value: "Align renders, compute metrics, and emit deterministic reports.",
   accent: "#EC4899",
   pills: ["Alignment","HTML report","Fail thresholds"],
   demo: ["$ audiodiff-report before.wav after.wav --format html --out ./audiodiff","Aligned offset: 0.18s","LUFS Δ: 0.32  True Peak: -0.9 dB","Report: ./audiodiff/index.html"],
+  output: ["report.html","summary.json","LUFS \u0394: 0.32","true peak: -0.9 dB"],
   callout: "For MP3 support, enable `--ffmpeg` in environments where FFmpeg is available.",
   quickstart: "npx audiodiff-report before.wav after.wav --format html --out ./audiodiff",
   hero: { width: 1600, height: 900 },
-  heroAccent: "bottom",
+  heroAccent: "none",
   icon: {
     inner: `
 <rect x="136" y="112" width="240" height="288" rx="24" stroke="{{accent}}" stroke-width="{{stroke}}"/>

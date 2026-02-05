@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2025-01-10T12:00:00.000Z",
+  "results": [
+    {
+      "fileA": "before.wav",
+      "fileB": "after.wav",
+      "metrics": {
+        "lufs": -18.42,
+        "lra": 2.31,
+        "peak": 0.621,
+        "truePeak": 0.742,
+        "rms": 0.182,
+        "crest": 3.41,
+        "clipping": false,
+        "correlation": 0.98,
+        "midSideRatio": 0.12,
+        "dcOffset": 0.0002,
+        "spectralDiff": [
+          0.2,
+          0.4,
+          0.1,
+          0.05,
+          0.03,
+          0.01
+        ],
+        "leadingSilenceMs": 0,
+        "trailingSilenceMs": 12
+      }
+    }
+  ]
+}
