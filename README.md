@@ -1,20 +1,33 @@
+<picture>
+  <source srcset="branding/hero.svg" type="image/svg+xml">
+  <img alt="audiodiff-report hero" src="branding/hero.png" width="100%">
+</picture>
+
 # audiodiff-report
-Alignment-aware audio diffs with CI gating and producer-friendly metrics.
+Alignment-aware audio diffs with CI gating and producer-friendly metrics. Align renders, compute metrics, and emit deterministic reports.
 
-- Aligns renders before comparison for accurate diffs.
-- Produces HTML, JSON, or MD reports with producer-friendly metrics.
-- Supports CI gating with `--fail` thresholds and optional GitHub Action usage.
+![CI](https://github.com/PetriLahdelma/audiodiff-report/actions/workflows/ci.yml/badge.svg) ![Release](https://img.shields.io/github/v/release/PetriLahdelma/audiodiff-report) ![License](https://img.shields.io/github/license/PetriLahdelma/audiodiff-report) ![Stars](https://img.shields.io/github/stars/PetriLahdelma/audiodiff-report)
 
-**Try in 10 seconds**
+> [!IMPORTANT]
+> For MP3 support, enable `--ffmpeg` in environments where FFmpeg is available.
+
+## Quickstart
 ```bash
 npx audiodiff-report before.wav after.wav --format html --out ./audiodiff
 ```
 
-**Demo**
-Record a run that opens the HTML report and highlights a metric change.
+## Demo
+![Terminal Demo](branding/screenshots/terminal-demo.svg)
 
-Star if this saves you time.  
-→ Buzz Kit: /buzz-kit
+```bash
+audiodiff-report before.wav after.wav --format html --out ./audiodiff
+```
+
+## Docs
+Start here: [Installation](#installation) · [Configuration](#configuration) · [CLI Help](#cli-help) · [Audio Regression Testing in CI](#audio-regression-testing-in-ci) · [Troubleshooting](#troubleshooting)
+
+## Contributing
+See `CONTRIBUTING.md`.
 
 ## Problem Statement
 Audio regressions are subtle and easy to miss in CI. This tool aligns renders, measures perceptual metrics, and produces a deterministic report you can gate on.
@@ -27,16 +40,6 @@ Audio regressions are subtle and easy to miss in CI. This tool aligns renders, m
 ## Installation
 ```bash
 npm i -D audiodiff-report
-```
-
-## Quickstart
-```bash
-npx audiodiff-report before.wav after.wav --format html --out ./audiodiff
-```
-
-Directory mode:
-```bash
-npx audiodiff-report ./before ./after --glob "**/*.{wav,aiff,flac}" --match by-name --format html --out ./audiodiff
 ```
 
 ## Examples
@@ -114,8 +117,6 @@ Uses a pragmatic approximation for deterministic CI.
     comment: true
 ```
 
-## Contributing
-See `CONTRIBUTING.md`.
-
 ## License
 MIT.
+

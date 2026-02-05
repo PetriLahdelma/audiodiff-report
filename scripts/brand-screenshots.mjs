@@ -1,0 +1,99 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { optimize } from "svgo";
+import sharp from "sharp";
+import config from "../branding/brand.config.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(__dirname, "..");
+const brandingDir = path.join(root, "branding");
+const screenshotsDir = path.join(brandingDir, "screenshots");
+
+const system = {
+  bg: "#0B0D12",
+  panel: "#0F172A",
+  panelBorder: "#253147",
+  text: "#E6EDF7",
+  muted: "#9AA8BD"
+};
+
+const fontSans = '"Space Grotesk","Sora","IBM Plex Sans",sans-serif';
+const fontMono = '"IBM Plex Mono","JetBrains Mono",monospace';
+
+await fs.mkdir(screenshotsDir, { recursive: true });
+
+function svgDoc({ width, height, body }) {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">` +
+    `<style>\n` +
+    `:root{color-scheme:light dark;}\n` +
+    `text{font-family:${fontSans};} .mono{font-family:${fontMono};}\n` +
+    `</style>` +
+    `${body}</svg>`;
+}
+
+function escapeText(text) {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function terminalSvg() {
+  const width = 1200;
+  const height = 680;
+  const padding = 48;
+  const topBarHeight = 48;
+  const lineHeight = 34;
+  const fontSize = 22;
+  const lines = config.demo ?? [];
+
+  const textLines = lines.map((line, index) => {
+    const y = padding + topBarHeight + (index + 1) * lineHeight;
+    const fill = index === 0 ? system.text : system.muted;
+    return `<text x="${padding}" y="${y}" class="mono" font-size="${fontSize}" fill="${fill}">${escapeText(line)}</text>`;
+  }).join("\n");
+
+  const body = `
+    <rect width="${width}" height="${height}" rx="28" fill="${system.bg}"/>
+    <rect x="24" y="24" width="${width - 48}" height="${height - 48}" rx="24" fill="${system.panel}" stroke="${system.panelBorder}" stroke-width="2"/>
+    <rect x="24" y="24" width="${width - 48}" height="${topBarHeight}" rx="24" fill="${system.panelBorder}"/>
+    <circle cx="56" cy="48" r="6" fill="#F87171"/>
+    <circle cx="76" cy="48" r="6" fill="#FBBF24"/>
+    <circle cx="96" cy="48" r="6" fill="#34D399"/>
+    <text x="${width - 180}" y="54" font-size="14" fill="${system.muted}">${config.name}</text>
+    ${textLines}
+  `;
+  return svgDoc({ width, height, body });
+}
+
+async function writeSvg(filePath, svg) {
+  const optimized = optimize(svg, {
+    multipass: true,
+    plugins: [
+      {
+        name: "preset-default",
+        params: { overrides: { removeViewBox: false } }
+      }
+    ]
+  }).data;
+  await fs.writeFile(filePath, optimized, "utf8");
+}
+
+async function renderPng(svgPath, outPath, width, height) {
+  const buffer = await fs.readFile(svgPath);
+  let image = sharp(buffer, { density: 144 });
+  if (width || height) {
+    image = image.resize(width, height);
+  }
+  await image.png({ compressionLevel: 9, quality: 90 }).toFile(outPath);
+}
+
+const svgPath = path.join(screenshotsDir, "terminal-demo.svg");
+const pngPath = path.join(screenshotsDir, "terminal-demo.png");
+
+await writeSvg(svgPath, terminalSvg());
+await renderPng(svgPath, pngPath, 1200, 680);
+
+console.log(`Screenshots generated for ${config.name}.`);
