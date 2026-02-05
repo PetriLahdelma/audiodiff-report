@@ -34,38 +34,43 @@ function mdReport(report: Report): string {
 }
 
 function htmlReport(report: Report): string {
-  const rows = report.results.map((r) => `
-    <tr>
-      <td>${r.fileA}</td>
-      <td>${r.fileB}</td>
-      <td>${r.metrics.lufs.toFixed(2)}</td>
-      <td>${r.metrics.lra.toFixed(2)}</td>
-      <td>${r.metrics.truePeak.toFixed(3)}</td>
-      <td>${r.metrics.clipping}</td>
-    </tr>
-  `).join('');
+  const rows = report.results.map((r) => {
+    return [
+      '<tr>',
+      `<td>${r.fileA}</td>`,
+      `<td>${r.fileB}</td>`,
+      `<td>${r.metrics.lufs.toFixed(2)}</td>`,
+      `<td>${r.metrics.lra.toFixed(2)}</td>`,
+      `<td>${r.metrics.truePeak.toFixed(3)}</td>`,
+      `<td>${r.metrics.clipping}</td>`,
+      '</tr>'
+    ].join('');
+  }).join('');
 
-  return `<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Audio Diff Report</title>
-  <style>
-    body { font-family: system-ui, sans-serif; padding: 24px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 8px; font-size: 14px; }
-    th { background: #f7f7f7; }
-  </style>
-</head>
-<body>
-  <h1>Audio Diff Report</h1>
-  <p>Generated: ${report.generatedAt}</p>
-  <table>
-    <thead>
-      <tr><th>File A</th><th>File B</th><th>LUFS</th><th>LRA</th><th>True Peak</th><th>Clip</th></tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>
-</body>
-</html>`;
+  return [
+    '<!doctype html>',
+    '<html>',
+    '<head>',
+    '  <meta charset="utf-8" />',
+    '  <title>Audio Diff Report</title>',
+    '  <style>',
+    '    body { font-family: system-ui, sans-serif; padding: 24px; }',
+    '    table { width: 100%; border-collapse: collapse; }',
+    '    th, td { border: 1px solid #ddd; padding: 8px; font-size: 14px; }',
+    '    th { background: #f7f7f7; }',
+    '  </style>',
+    '</head>',
+    '<body>',
+    '  <h1>Audio Diff Report</h1>',
+    `  <p>Generated: ${report.generatedAt}</p>`,
+    '  <table>',
+    '    <thead>',
+    '      <tr><th>File A</th><th>File B</th><th>LUFS</th><th>LRA</th><th>True Peak</th><th>Clip</th></tr>',
+    '    </thead>',
+    `    <tbody>${rows}</tbody>`,
+    '  </table>',
+    '</body>',
+    '</html>'
+  ].join('
+');
 }
