@@ -287,6 +287,7 @@ function heroAccent(position = "right") {
 function heroSvg() {
   const width = config.hero?.width ?? 1600;
   const height = config.hero?.height ?? 900;
+  const radius = config.heroRadius ?? 36;
   const iconSize = 420;
   const iconX = 120;
   const iconY = 220;
@@ -309,14 +310,18 @@ function heroSvg() {
         <stop stop-color="${accent}" stop-opacity="0.35"/>
         <stop offset="1" stop-color="${accent}" stop-opacity="0"/>
       </radialGradient>
+      <clipPath id="heroClip">
+        <rect width="${width}" height="${height}" rx="${radius}"/>
+      </clipPath>
     </defs>
-    <rect width="${width}" height="${height}" fill="${system.bg}"/>
-    <rect width="${width}" height="${height}" fill="url(#glow)"/>
-    <g opacity="0.25" stroke="${system.grid}" stroke-width="1">
-      ${grid}
-    </g>
-    ${iconGroup({ x: iconX, y: iconY, size: iconSize })}
-    ${renderTextLines({
+    <g clip-path="url(#heroClip)">
+      <rect width="${width}" height="${height}" fill="${system.bg}"/>
+      <rect width="${width}" height="${height}" fill="url(#glow)"/>
+      <g opacity="0.25" stroke="${system.grid}" stroke-width="1">
+        ${grid}
+      </g>
+      ${iconGroup({ x: iconX, y: iconY, size: iconSize })}
+      ${renderTextLines({
       x: 760,
       y: titleY,
       lines: titleLines,
@@ -326,7 +331,7 @@ function heroSvg() {
       weight: 700,
       letterSpacing: "-0.02em"
     })}
-    ${renderTextLines({
+      ${renderTextLines({
       x: 760,
       y: taglineY,
       lines: taglineLines,
@@ -334,8 +339,9 @@ function heroSvg() {
       lineHeight: config.heroTaglineLineHeight ?? 38,
       fill: system.muted
     })}
-    ${pills}
-    ${heroAccent(config.heroAccent ?? "right")}
+      ${pills}
+      ${heroAccent(config.heroAccent ?? "right")}
+    </g>
   `;
   return svgDoc({ width, height, body });
 }
