@@ -29,8 +29,7 @@ function mdReport(report: Report): string {
     lines.push(`- Clipping: ${r.metrics.clipping}`);
     lines.push('');
   }
-  return lines.join('
-');
+  return lines.join('\n');
 }
 
 function htmlReport(report: Report): string {
@@ -71,6 +70,5 @@ function htmlReport(report: Report): string {
     '  </table>',
     '</body>',
     '</html>'
-  ].join('
-');
+  ].join('\n');
 }
