@@ -52,8 +52,9 @@ function panelSvg({ title, lines, transparent = false }) {
     const fill = index === 0 ? system.text : system.muted;
     return `<text x="${padding}" y="${y}" class="mono" font-size="${fontSize}" fill="${fill}">${escapeText(line)}</text>`;
   }).join("\n");
+  const headerLeftX = padding + 72;
   const headerLeft = title
-    ? `<text x="${padding}" y="54" font-size="14" fill="${system.text}">${escapeText(title)}</text>`
+    ? `<text x="${headerLeftX}" y="54" font-size="14" fill="${system.text}">${escapeText(title)}</text>`
     : "";
 
   const background = transparent ? "" : `<rect width="${width}" height="${height}" fill="${system.bg}"/>`;
