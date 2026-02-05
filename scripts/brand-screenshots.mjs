@@ -134,7 +134,7 @@ const outputPngPath = path.join(screenshotsDir, "output-demo.png");
 await writeSvg(svgPath, terminalSvg());
 await renderPngFromSvg(terminalSvg(true), pngPath, 1200, 680);
 if (config.output && config.output.length > 0) {
-  await writeSvg(outputSvgPath, outputSvg());
+  await writeSvg(outputSvgPath, outputSvg(true));
   await renderPngFromSvg(outputSvg(true), outputPngPath, 1200, 680);
 }
 
