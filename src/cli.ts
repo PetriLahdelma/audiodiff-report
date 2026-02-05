@@ -27,6 +27,10 @@ program
   .action(async (pathA, pathB, opts) => {
     try {
       const configPath = opts.config || (fs.existsSync('audiodiff.config.json') ? 'audiodiff.config.json' : null);
+      if (opts.config && !fs.existsSync(opts.config)) {
+        console.error(`Config not found: ${opts.config}`);
+        process.exit(exitCode.INVALID_ARGS);
+      }
       const config = configPath ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
       const merged = { ...config, ...opts };
 
@@ -36,7 +40,31 @@ program
         process.exit(exitCode.INVALID_ARGS);
       }
 
-      const isDir = pathA.endsWith('/') || pathB.endsWith('/') || merged.glob;
+      const validMatch = new Set(['by-name', 'by-order']);
+      if (!validMatch.has(merged.match)) {
+        console.error('Invalid --match (use by-name or by-order)');
+        process.exit(exitCode.INVALID_ARGS);
+      }
+
+      const validFormats = new Set(['html', 'json', 'md']);
+      if (!validFormats.has(merged.format)) {
+        console.error('Invalid --format (use html, json, or md)');
+        process.exit(exitCode.INVALID_ARGS);
+      }
+
+      if (!fs.existsSync(pathA) || !fs.existsSync(pathB)) {
+        console.error('Input paths must exist');
+        process.exit(exitCode.INVALID_ARGS);
+      }
+
+      const statA = fs.statSync(pathA);
+      const statB = fs.statSync(pathB);
+      const isDir = statA.isDirectory() || statB.isDirectory() || merged.glob;
+
+      if (statA.isDirectory() !== statB.isDirectory() && !merged.glob) {
+        console.error('Both inputs must be files or both must be directories');
+        process.exit(exitCode.INVALID_ARGS);
+      }
       const files: Array<{ a: string; b: string }> = [];
 
       if (isDir) {
@@ -61,8 +89,8 @@ program
 
       const results = [];
       for (const pair of files) {
-        const fileA = isDir ? `${pathA}/${pair.a}` : pair.a;
-        const fileB = isDir ? `${pathB}/${pair.b}` : pair.b;
+        const fileA = isDir ? path.join(pathA, pair.a) : pair.a;
+        const fileB = isDir ? path.join(pathB, pair.b) : pair.b;
         const audioA = await readAudio(fileA, { downmix: !!merged.downmix, ffmpeg: !!merged.ffmpeg });
         const audioB = await readAudio(fileB, { downmix: !!merged.downmix, ffmpeg: !!merged.ffmpeg });
         const aligned = alignSignals(audioA, audioB, { maxOffsetSec: maxOffset });

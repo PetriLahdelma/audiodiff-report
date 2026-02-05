@@ -1,10 +1,29 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import decode from 'audio-decode';
 import { AudioBufferLike } from './types.js';
 
 async function decodeWithFfmpeg(filePath: string): Promise<AudioBufferLike> {
-  throw new Error(`FFmpeg decode requested but not implemented in pure Node mode: ${filePath}`);
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'audiodiff-'));
+  const outPath = path.join(tmpDir, 'decoded.wav');
+  try {
+    const res = spawnSync('ffmpeg', ['-y', '-i', filePath, '-f', 'wav', outPath], { stdio: 'ignore' });
+    if (res.error) {
+      throw new Error(`FFmpeg not available: ${res.error.message}`);
+    }
+    if (res.status !== 0) {
+      throw new Error(`FFmpeg decode failed (exit ${res.status})`);
+    }
+    const bytes = fs.readFileSync(outPath);
+    const audio = await decode(bytes);
+    const channels: Float32Array[] = [];
+    for (let c = 0; c < audio.numberOfChannels; c++) channels.push(audio.getChannelData(c));
+    return { sampleRate: audio.sampleRate, channels };
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
 }
 
 export async function readAudio(filePath: string, opts: { downmix: boolean; ffmpeg: boolean }): Promise<AudioBufferLike> {

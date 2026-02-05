@@ -20,14 +20,22 @@ outputs:
 runs:
   using: composite
   steps:
-    - run: npx audiodiff-report ${{ inputs.before-path }} ${{ inputs.after-path }} --glob "${{ inputs.glob }}" --format md --out ./audiodiff --fail "${{ inputs.thresholds }}"
+    - run: |
+        cmd="npx audiodiff-report ${{ inputs.before-path }} ${{ inputs.after-path }} --format md --out ./audiodiff"
+        if [ -n "${{ inputs.glob }}" ]; then
+          cmd="$cmd --glob \"${{ inputs.glob }}\""
+        fi
+        if [ -n "${{ inputs.thresholds }}" ]; then
+          cmd="$cmd --fail \"${{ inputs.thresholds }}\""
+        fi
+        eval "$cmd"
       shell: bash
     - if: inputs.upload-artifact == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: audiodiff-report
         path: audiodiff
-    - if: inputs.comment == 'true' && github.event.pull_request
+    - if: inputs.comment == 'true' && github.event_name == 'pull_request'
       uses: actions/github-script@v7
       with:
         script: |

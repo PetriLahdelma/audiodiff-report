@@ -1,9 +1,28 @@
 # audiodiff-report
-
 Alignment-aware audio diffs with CI gating and producer-friendly metrics.
+
+- Aligns renders before comparison for accurate diffs.
+- Produces HTML, JSON, or MD reports with producer-friendly metrics.
+- Supports CI gating with `--fail` thresholds and optional GitHub Action usage.
+
+**Try in 10 seconds**
+```bash
+npx audiodiff-report before.wav after.wav --format html --out ./audiodiff
+```
+
+**Demo**
+Record a run that opens the HTML report and highlights a metric change.
+
+Star if this saves you time.  
+→ Buzz Kit: /buzz-kit
 
 ## Problem Statement
 Audio regressions are subtle and easy to miss in CI. This tool aligns renders, measures perceptual metrics, and produces a deterministic report you can gate on.
+
+## Requirements
+
+- Node.js 20+
+- Optional: FFmpeg (only when using `--ffmpeg` for MP3 decode fallback)
 
 ## Installation
 ```bash
@@ -24,6 +43,19 @@ npx audiodiff-report ./before ./after --glob "**/*.{wav,aiff,flac}" --match by-n
 ```bash
 npx audiodiff-report before.wav after.wav --format json --out ./audiodiff
 npx audiodiff-report before.wav after.wav --fail "lufs>0.3,tp>-1.0,clip=true,dc>0.01"
+```
+
+## Configuration
+
+`audiodiff.config.json` is auto-detected if present, or pass `--config <path>`.
+
+```json
+{
+  "format": "html",
+  "out": "./audiodiff",
+  "match": "by-name",
+  "maxOffset": 2.0
+}
 ```
 
 ## CLI Help
@@ -56,6 +88,13 @@ Uses a pragmatic approximation for deterministic CI.
 ## Troubleshooting
 - **Different lengths**: increase `--max-offset`.
 - **Channel mismatch**: use `--downmix`.
+
+## Exit Codes
+
+- `0` Success
+- `2` Thresholds failed
+- `3` Runtime error
+- `4` Invalid arguments
 
 ## How It Works
 1. Decode to PCM.
