@@ -42,7 +42,8 @@
     "lint": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "brand:build": "node scripts/brand-build.mjs",
-    "brand:screenshots": "node scripts/brand-screenshots.mjs"
+    "brand:screenshots": "node scripts/brand-screenshots.mjs",
+    "brand:demo": "node scripts/brand-demo.mjs"
   },
   "engines": {
     "node": ">=20"

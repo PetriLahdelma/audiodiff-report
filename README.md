@@ -49,7 +49,7 @@ npx audiodiff-report before.wav after.wav --format html --out ./audiodiff
 ```
 
 ## Demo
-![Terminal Demo](branding/screenshots/terminal-demo.svg)
+![Demo](branding/demos/demo.gif)
 
 ```bash
 audiodiff-report before.wav after.wav --format html --out ./audiodiff
