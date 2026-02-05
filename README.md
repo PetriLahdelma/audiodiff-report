@@ -1,6 +1,20 @@
 # audiodiff-report
-
 Alignment-aware audio diffs with CI gating and producer-friendly metrics.
+
+- Aligns renders before comparison for accurate diffs.
+- Produces HTML, JSON, or MD reports with producer-friendly metrics.
+- Supports CI gating with `--fail` thresholds and optional GitHub Action usage.
+
+**Try in 10 seconds**
+```bash
+npx audiodiff-report before.wav after.wav --format html --out ./audiodiff
+```
+
+**Demo**
+Record a run that opens the HTML report and highlights a metric change.
+
+Star if this saves you time.  
+→ Buzz Kit: /buzz-kit
 
 ## Problem Statement
 Audio regressions are subtle and easy to miss in CI. This tool aligns renders, measures perceptual metrics, and produces a deterministic report you can gate on.
