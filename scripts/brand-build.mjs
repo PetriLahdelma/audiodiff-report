@@ -195,6 +195,49 @@ function pillGroup({ x, y, labels, fontSize = 24 }) {
   return pills.join("\n");
 }
 
+function heroAccent(position = "right") {
+  if (position === "none") return "";
+  const preset = position === "bottom"
+    ? {
+        dots: [
+          { x: 1300, y: 660 },
+          { x: 1340, y: 660 },
+          { x: 1380, y: 660 }
+        ],
+        bars: [
+          { x: 1180, y: 700, w: 180, o: 0.35 },
+          { x: 1180, y: 730, w: 220, o: 0.18 },
+          { x: 1180, y: 760, w: 150, o: 0.28 }
+        ]
+      }
+    : {
+        dots: [
+          { x: 1320, y: 260 },
+          { x: 1360, y: 260 },
+          { x: 1400, y: 260 }
+        ],
+        bars: [
+          { x: 1240, y: 300, w: 180, o: 0.35 },
+          { x: 1240, y: 330, w: 220, o: 0.18 },
+          { x: 1240, y: 360, w: 150, o: 0.28 }
+        ]
+      };
+
+  const dots = preset.dots
+    .map((dot) => `<circle cx="${dot.x}" cy="${dot.y}" r="6" fill="${accent}"/>`)
+    .join("\n");
+  const bars = preset.bars
+    .map((bar) => `<rect x="${bar.x}" y="${bar.y}" width="${bar.w}" height="12" rx="6" fill="${accent}" fill-opacity="${bar.o}"/>`)
+    .join("\n");
+
+  return `
+    <g opacity="0.6">
+      ${dots}
+      ${bars}
+    </g>
+  `;
+}
+
 function heroSvg() {
   const width = config.hero?.width ?? 1600;
   const height = config.hero?.height ?? 900;
@@ -219,14 +262,7 @@ function heroSvg() {
     <text x="760" y="320" font-size="72" font-weight="700" letter-spacing="-0.02em" fill="${system.text}">${config.name}</text>
     <text x="760" y="380" font-size="30" fill="${system.muted}">${config.tagline}</text>
     ${pills}
-    <g opacity="0.6">
-      <circle cx="1320" cy="260" r="6" fill="${accent}"/>
-      <circle cx="1360" cy="260" r="6" fill="${accent}"/>
-      <circle cx="1400" cy="260" r="6" fill="${accent}"/>
-      <rect x="1240" y="300" width="180" height="12" rx="6" fill="${accent}" fill-opacity="0.35"/>
-      <rect x="1240" y="330" width="220" height="12" rx="6" fill="${accent}" fill-opacity="0.18"/>
-      <rect x="1240" y="360" width="150" height="12" rx="6" fill="${accent}" fill-opacity="0.28"/>
-    </g>
+    ${heroAccent(config.heroAccent ?? "right")}
   `;
   return svgDoc({ width, height, body });
 }

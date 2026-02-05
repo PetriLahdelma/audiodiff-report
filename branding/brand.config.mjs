@@ -8,6 +8,7 @@ export default {
   callout: "For MP3 support, enable `--ffmpeg` in environments where FFmpeg is available.",
   quickstart: "npx audiodiff-report before.wav after.wav --format html --out ./audiodiff",
   hero: { width: 1600, height: 900 },
+  heroAccent: "bottom",
   icon: {
     inner: `
 <rect x="136" y="112" width="240" height="288" rx="24" stroke="{{accent}}" stroke-width="{{stroke}}"/>
