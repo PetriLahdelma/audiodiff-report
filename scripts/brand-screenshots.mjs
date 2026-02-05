@@ -56,12 +56,18 @@ function terminalSvg() {
   }).join("\n");
 
   const body = `
-    <rect width="${width}" height="${height}" rx="28" fill="${system.bg}"/>
-    <rect x="24" y="24" width="${width - 48}" height="${height - 48}" rx="24" fill="${system.panel}" stroke="${system.panelBorder}" stroke-width="2"/>
-    <rect x="24" y="24" width="${width - 48}" height="${topBarHeight}" rx="24" fill="${system.panelBorder}"/>
-    <circle cx="56" cy="48" r="6" fill="#F87171"/>
-    <circle cx="76" cy="48" r="6" fill="#FBBF24"/>
-    <circle cx="96" cy="48" r="6" fill="#34D399"/>
+    <defs>
+      <filter id="shadow" x="0" y="0" width="200%" height="200%">
+        <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.35"/>
+      </filter>
+    </defs>
+    <g filter="url(#shadow)">
+      <rect x="24" y="24" width="${width - 48}" height="${height - 48}" rx="24" fill="${system.panel}" stroke="${system.panelBorder}" stroke-width="2"/>
+      <rect x="24" y="24" width="${width - 48}" height="${topBarHeight}" rx="24" fill="${system.panelBorder}"/>
+      <circle cx="56" cy="48" r="6" fill="#F87171"/>
+      <circle cx="76" cy="48" r="6" fill="#FBBF24"/>
+      <circle cx="96" cy="48" r="6" fill="#34D399"/>
+    </g>
     <text x="${width - 180}" y="54" font-size="14" fill="${system.muted}">${config.name}</text>
     ${textLines}
   `;
