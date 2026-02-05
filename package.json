@@ -8,6 +8,6 @@
   "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md", ".github/actions/audiodiff-report"],
   "scripts": {"build": "tsc -p tsconfig.json", "test": "vitest run", "lint": "tsc -p tsconfig.json --noEmit"},
   "engines": {"node": ">=20"},
-  "dependencies": {"audio-decode": "0.4.3", "commander": "11.1.0", "fast-glob": "3.3.2", "fft.js": "4.0.4"},
+  "dependencies": {"audio-decode": "2.2.3", "commander": "11.1.0", "fast-glob": "3.3.2", "fft.js": "4.0.4"},
   "devDependencies": {"@types/node": "20.11.30", "typescript": "5.4.5", "vitest": "1.4.0"}
 }
