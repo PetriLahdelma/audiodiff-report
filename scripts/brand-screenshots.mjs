@@ -11,7 +11,7 @@ const brandingDir = path.join(root, "branding");
 const screenshotsDir = path.join(brandingDir, "screenshots");
 
 const system = {
-  bg: "#0B0D12",
+  bg: "#F5F7FB",
   panel: "#0F172A",
   panelBorder: "#253147",
   text: "#E6EDF7",
@@ -40,22 +40,24 @@ function escapeText(text) {
     .replaceAll(">", "&gt;");
 }
 
-function terminalSvg() {
+function panelSvg({ title, lines }) {
   const width = 1200;
   const height = 680;
   const padding = 48;
   const topBarHeight = 48;
   const lineHeight = 34;
   const fontSize = 22;
-  const lines = config.demo ?? [];
-
-  const textLines = lines.map((line, index) => {
+  const textLines = (lines ?? []).map((line, index) => {
     const y = padding + topBarHeight + (index + 1) * lineHeight;
     const fill = index === 0 ? system.text : system.muted;
     return `<text x="${padding}" y="${y}" class="mono" font-size="${fontSize}" fill="${fill}">${escapeText(line)}</text>`;
   }).join("\n");
+  const headerLeft = title
+    ? `<text x="${padding}" y="54" font-size="14" fill="${system.text}">${escapeText(title)}</text>`
+    : "";
 
   const body = `
+    <rect width="${width}" height="${height}" fill="${system.bg}"/>
     <defs>
       <filter id="shadow" x="0" y="0" width="200%" height="200%">
         <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.35"/>
@@ -68,10 +70,19 @@ function terminalSvg() {
       <circle cx="76" cy="48" r="6" fill="#FBBF24"/>
       <circle cx="96" cy="48" r="6" fill="#34D399"/>
     </g>
+    ${headerLeft}
     <text x="${width - 180}" y="54" font-size="14" fill="${system.muted}">${config.name}</text>
     ${textLines}
   `;
   return svgDoc({ width, height, body });
+}
+
+function terminalSvg() {
+  return panelSvg({ title: "", lines: config.demo ?? [] });
+}
+
+function outputSvg() {
+  return panelSvg({ title: "Output", lines: config.output ?? [] });
 }
 
 async function writeSvg(filePath, svg) {
@@ -98,8 +109,14 @@ async function renderPng(svgPath, outPath, width, height) {
 
 const svgPath = path.join(screenshotsDir, "terminal-demo.svg");
 const pngPath = path.join(screenshotsDir, "terminal-demo.png");
+const outputSvgPath = path.join(screenshotsDir, "output-demo.svg");
+const outputPngPath = path.join(screenshotsDir, "output-demo.png");
 
 await writeSvg(svgPath, terminalSvg());
 await renderPng(svgPath, pngPath, 1200, 680);
+if (config.output && config.output.length > 0) {
+  await writeSvg(outputSvgPath, outputSvg());
+  await renderPng(outputSvgPath, outputPngPath, 1200, 680);
+}
 
 console.log(`Screenshots generated for ${config.name}.`);

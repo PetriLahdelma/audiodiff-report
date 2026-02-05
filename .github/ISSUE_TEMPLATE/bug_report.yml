@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a reproducible issue
+title: "bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+      placeholder: A clear and concise description of the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide minimal steps to reproduce.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs / Config
+      description: CLI args, config files, or workflow yaml.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Logs / Output
+      description: Paste the exact output or error messages.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Tool version
+      placeholder: e.g. 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: e.g. 20.10.0
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS / runner
+      placeholder: ubuntu-latest / macOS 14 / Windows 11
+    validations:
+      required: true

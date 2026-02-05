@@ -178,7 +178,7 @@ function buildGridLines(width, height, step = 80) {
 }
 
 function pillGroup({ x, y, labels, fontSize = 24 }) {
-  const paddingX = 12;
+  const paddingX = 10;
   const height = 40;
   const textY = height / 2;
   let cursorX = x;
@@ -197,11 +197,31 @@ function pillGroup({ x, y, labels, fontSize = 24 }) {
   return pills.join("\n");
 }
 
+
 function wrapLines(text, maxWidth, fontSize, maxLines = 2) {
   if (!text) return [""];
-  const approxCharWidth = fontSize * 0.56;
+  const manual = text.split("\n").map((line) => line.trim()).filter(Boolean);
+  if (manual.length > 1) {
+    return manual.slice(0, maxLines);
+  }
+  const approxCharWidth = fontSize * 0.6;
   const maxChars = Math.max(8, Math.floor(maxWidth / approxCharWidth));
-  const words = text.split(/\s+/).filter(Boolean);
+  const rawWords = text.split(/\s+/).filter(Boolean);
+  const words = [];
+
+  for (const word of rawWords) {
+    if (word.length > maxChars && word.includes("-")) {
+      const parts = word.split("-");
+      parts.forEach((part, index) => {
+        if (!part) return;
+        const suffix = index < parts.length - 1 ? "-" : "";
+        words.push(part + suffix);
+      });
+      continue;
+    }
+    words.push(word);
+  }
+
   const lines = [];
   let current = "";
 
@@ -227,6 +247,7 @@ function wrapLines(text, maxWidth, fontSize, maxLines = 2) {
   kept[maxLines - 1] = last;
   return kept;
 }
+
 
 function renderTextLines({ x, y, lines, fontSize, lineHeight, fill, weight = null, letterSpacing = null }) {
   return lines.map((line, index) => {
