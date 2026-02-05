@@ -178,16 +178,17 @@ function buildGridLines(width, height, step = 80) {
 }
 
 function pillGroup({ x, y, labels, fontSize = 24 }) {
-  const paddingX = 18;
+  const paddingX = 12;
   const height = 40;
   const textY = height / 2;
   let cursorX = x;
   const pills = labels.map((label) => {
-    const width = Math.round(label.length * fontSize * 0.56 + paddingX * 2);
+    const width = Math.round(label.length * fontSize * 0.52 + paddingX * 2);
+    const textX = Math.round(width / 2);
     const pill = `
       <g transform="translate(${cursorX} ${y})">
         <rect width="${width}" height="${height}" rx="20" fill="${system.panel}" stroke="${system.faint}" stroke-width="1" />
-        <text x="${paddingX}" y="${textY}" font-size="${fontSize}" fill="${system.text}" dominant-baseline="middle">${label}</text>
+        <text x="${textX}" y="${textY}" font-size="${fontSize}" fill="${system.text}" dominant-baseline="middle" text-anchor="middle">${label}</text>
       </g>
     `;
     cursorX += width + 14;
