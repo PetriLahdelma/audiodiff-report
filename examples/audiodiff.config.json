@@ -1,0 +1,7 @@
+{
+  "format": "html",
+  "out": "./audiodiff",
+  "match": "by-name",
+  "glob": "**/*.{wav,aiff,flac}",
+  "fail": "lufs>0.3,tp>-1.0,clip=true"
+}
