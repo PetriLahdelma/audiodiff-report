@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { Command } from 'commander';
 import fg from 'fast-glob';
 import { readAudio } from './lib/audio-read.js';
@@ -12,6 +14,7 @@ program
   .name('audiodiff-report')
   .argument('<pathA>', 'file or directory A')
   .argument('<pathB>', 'file or directory B')
+  .option('--config <path>', 'config file path')
   .option('--glob <pattern>', 'glob pattern for dir comparison')
   .option('--match <mode>', 'by-name | by-order', 'by-name')
   .option('--format <fmt>', 'html | json | md', 'html')
@@ -23,20 +26,24 @@ program
   .option('--ffmpeg', 'enable ffmpeg mp3 fallback')
   .action(async (pathA, pathB, opts) => {
     try {
-      const maxOffset = Number(opts.maxOffset);
+      const configPath = opts.config || (fs.existsSync('audiodiff.config.json') ? 'audiodiff.config.json' : null);
+      const config = configPath ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+      const merged = { ...config, ...opts };
+
+      const maxOffset = Number(merged.maxOffset);
       if (Number.isNaN(maxOffset) || maxOffset <= 0) {
         console.error('Invalid --max-offset');
         process.exit(exitCode.INVALID_ARGS);
       }
 
-      const isDir = pathA.endsWith('/') || pathB.endsWith('/') || opts.glob;
+      const isDir = pathA.endsWith('/') || pathB.endsWith('/') || merged.glob;
       const files: Array<{ a: string; b: string }> = [];
 
       if (isDir) {
-        const glob = opts.glob || '**/*.{wav,aiff,flac,mp3}';
+        const glob = merged.glob || '**/*.{wav,aiff,flac,mp3}';
         const listA = await fg(glob, { cwd: pathA, onlyFiles: true });
         const listB = await fg(glob, { cwd: pathB, onlyFiles: true });
-        if (opts.match === 'by-order') {
+        if (merged.match === 'by-order') {
           const count = Math.min(listA.length, listB.length);
           for (let i = 0; i < count; i++) files.push({ a: listA[i], b: listB[i] });
         } else {
@@ -56,19 +63,19 @@ program
       for (const pair of files) {
         const fileA = isDir ? `${pathA}/${pair.a}` : pair.a;
         const fileB = isDir ? `${pathB}/${pair.b}` : pair.b;
-        const audioA = await readAudio(fileA, { downmix: !!opts.downmix, ffmpeg: !!opts.ffmpeg });
-        const audioB = await readAudio(fileB, { downmix: !!opts.downmix, ffmpeg: !!opts.ffmpeg });
+        const audioA = await readAudio(fileA, { downmix: !!merged.downmix, ffmpeg: !!merged.ffmpeg });
+        const audioB = await readAudio(fileB, { downmix: !!merged.downmix, ffmpeg: !!merged.ffmpeg });
         const aligned = alignSignals(audioA, audioB, { maxOffsetSec: maxOffset });
         const metrics = computeMetrics(aligned.a, aligned.b, audioA.sampleRate);
         results.push({ fileA, fileB, metrics });
       }
 
       const report = buildReport(results);
-      await writeReport(report, opts.out, opts.format);
-      if (opts.json) console.log(JSON.stringify(report, null, 2));
+      await writeReport(report, merged.out, merged.format);
+      if (merged.json) console.log(JSON.stringify(report, null, 2));
 
-      if (opts.fail) {
-        const thresholds = parseThresholds(opts.fail);
+      if (merged.fail) {
+        const thresholds = parseThresholds(merged.fail);
         const ok = evalThresholds(report, thresholds);
         if (!ok) process.exit(exitCode.THRESHOLD_FAIL);
       }
