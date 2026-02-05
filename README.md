@@ -8,7 +8,7 @@ Alignment-aware audio diffs with CI gating and producer-friendly reports. Align 
 
 **Type:** CLI + Library (Node.js)
 
-![CI](https://github.com/PetriLahdelma/audiodiff-report/actions/workflows/ci.yml/badge.svg) ![Release](https://img.shields.io/github/v/release/PetriLahdelma/audiodiff-report) ![License](https://img.shields.io/github/license/PetriLahdelma/audiodiff-report) ![Stars](https://img.shields.io/github/stars/PetriLahdelma/audiodiff-report)
+![CI](https://github.com/PetriLahdelma/audiodiff-report/actions/workflows/ci.yml/badge.svg) ![Release](https://img.shields.io/github/v/release/PetriLahdelma/audiodiff-report) ![Provenance](https://img.shields.io/badge/npm%20provenance-verified-brightgreen?logo=npm) ![License](https://img.shields.io/github/license/PetriLahdelma/audiodiff-report) ![Stars](https://img.shields.io/github/stars/PetriLahdelma/audiodiff-report)
 
 > [!IMPORTANT]
 > For MP3 support, enable `--ffmpeg` in environments where FFmpeg is available.
