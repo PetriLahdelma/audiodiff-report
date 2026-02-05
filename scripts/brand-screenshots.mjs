@@ -63,7 +63,7 @@ function terminalSvg() {
     </defs>
     <g filter="url(#shadow)">
       <rect x="24" y="24" width="${width - 48}" height="${height - 48}" rx="24" fill="${system.panel}" stroke="${system.panelBorder}" stroke-width="2"/>
-      <rect x="24" y="24" width="${width - 48}" height="${topBarHeight}" rx="24" fill="${system.panelBorder}"/>
+      <path d="M48 24h${width - 96}a24 24 0 0 1 24 24v24H24V48a24 24 0 0 1 24-24z" fill="${system.panelBorder}"/>
       <circle cx="56" cy="48" r="6" fill="#F87171"/>
       <circle cx="76" cy="48" r="6" fill="#FBBF24"/>
       <circle cx="96" cy="48" r="6" fill="#34D399"/>
