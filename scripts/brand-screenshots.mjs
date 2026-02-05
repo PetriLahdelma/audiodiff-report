@@ -73,7 +73,7 @@ function panelSvg({ title, lines, transparent = false }) {
       <circle cx="96" cy="48" r="6" fill="#34D399"/>
     </g>
     ${headerLeft}
-    <text x="${width - 180}" y="54" font-size="14" fill="${system.muted}">${config.name}</text>
+    <text x="${width - 48}" y="54" font-size="14" fill="${system.muted}" text-anchor="end">${config.name}</text>
     ${textLines}
   `;
   return svgDoc({ width, height, body });
