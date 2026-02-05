@@ -1,0 +1,3 @@
+{
+  "fail": "lufs>0.3,tp>-1.0,clip=true,dc>0.01,correlation<0.2"
+}
