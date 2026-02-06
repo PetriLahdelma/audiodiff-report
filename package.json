@@ -1,6 +1,6 @@
 {
   "name": "audiodiff-report",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Alignment-aware audio diff reports with CI gating and producer-friendly metrics.",
   "license": "MIT",
   "repository": {
