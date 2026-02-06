@@ -57,7 +57,7 @@
   "devDependencies": {
     "@types/node": "20.11.30",
     "typescript": "5.4.5",
-    "vitest": "1.4.0",
+    "vitest": "4.0.18",
     "svgo": "^3.3.2",
     "sharp": "^0.33.5"
   }
