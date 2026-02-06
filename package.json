@@ -51,7 +51,7 @@
   "dependencies": {
     "audio-decode": "2.2.3",
     "commander": "11.1.0",
-    "fast-glob": "3.3.2",
+    "fast-glob": "3.3.3",
     "fft.js": "4.0.4"
   },
   "devDependencies": {
