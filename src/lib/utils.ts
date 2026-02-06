@@ -1,5 +1,11 @@
 export const exitCode = { OK: 0, THRESHOLD_FAIL: 2, RUNTIME_ERROR: 3, INVALID_ARGS: 4 } as const;
 
+export function ensureMatchingSampleRates(rateA: number, rateB: number): void {
+  if (rateA !== rateB) {
+    throw new Error(`Sample rate mismatch: ${rateA}Hz vs ${rateB}Hz. Resample inputs before diffing.`);
+  }
+}
+
 export function rms(signal: Float32Array): number {
   let sum = 0;
   for (let i = 0; i < signal.length; i++) sum += signal[i] * signal[i];
