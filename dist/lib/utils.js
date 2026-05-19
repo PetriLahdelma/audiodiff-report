@@ -1,4 +1,9 @@
 export const exitCode = { OK: 0, THRESHOLD_FAIL: 2, RUNTIME_ERROR: 3, INVALID_ARGS: 4 };
+export function ensureMatchingSampleRates(rateA, rateB) {
+    if (rateA !== rateB) {
+        throw new Error(`Sample rate mismatch: ${rateA}Hz vs ${rateB}Hz. Resample inputs before diffing.`);
+    }
+}
 export function rms(signal) {
     let sum = 0;
     for (let i = 0; i < signal.length; i++)

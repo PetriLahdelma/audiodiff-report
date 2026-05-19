@@ -28,11 +28,17 @@ function mdReport(report) {
     return lines.join('\n');
 }
 function htmlReport(report) {
+    const escapeHtml = (value) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     const rows = report.results.map((r) => {
         return [
             '<tr>',
-            `<td>${r.fileA}</td>`,
-            `<td>${r.fileB}</td>`,
+            `<td>${escapeHtml(r.fileA)}</td>`,
+            `<td>${escapeHtml(r.fileB)}</td>`,
             `<td>${r.metrics.lufs.toFixed(2)}</td>`,
             `<td>${r.metrics.lra.toFixed(2)}</td>`,
             `<td>${r.metrics.truePeak.toFixed(3)}</td>`,
@@ -55,7 +61,7 @@ function htmlReport(report) {
         '</head>',
         '<body>',
         '  <h1>Audio Diff Report</h1>',
-        `  <p>Generated: ${report.generatedAt}</p>`,
+        `  <p>Generated: ${escapeHtml(report.generatedAt)}</p>`,
         '  <table>',
         '    <thead>',
         '      <tr><th>File A</th><th>File B</th><th>LUFS</th><th>LRA</th><th>True Peak</th><th>Clip</th></tr>',
