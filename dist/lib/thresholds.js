@@ -1,8 +1,9 @@
 export function parseThresholds(expr) {
-    return expr.split(',').map((part) => {
-        const match = part.match(/([a-zA-Z]+)\s*(>=|<=|=|>|<)\s*([\w.\-]+)/);
+    return expr.split(',').map((rawPart) => {
+        const part = rawPart.trim();
+        const match = part.match(/^([a-zA-Z]+)\s*(>=|<=|=|>|<)\s*(true|false|-?(?:\d+(?:\.\d+)?|\.\d+))$/);
         if (!match)
-            throw new Error(`Invalid threshold: ${part}`);
+            throw new Error(`Invalid threshold: ${part || rawPart}`);
         return { key: match[1], op: match[2], value: match[3] };
     });
 }

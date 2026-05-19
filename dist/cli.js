@@ -7,7 +7,7 @@ import { alignSignals } from './lib/align.js';
 import { computeMetrics } from './lib/metrics.js';
 import { buildReport, writeReport } from './lib/report.js';
 import { parseThresholds, evalThresholds } from './lib/thresholds.js';
-import { exitCode } from './lib/utils.js';
+import { ensureMatchingSampleRates, exitCode } from './lib/utils.js';
 const program = new Command();
 program
     .name('audiodiff-report')
@@ -88,6 +88,7 @@ program
             const fileB = isDir ? path.join(pathB, pair.b) : pair.b;
             const audioA = await readAudio(fileA, { downmix: !!merged.downmix, ffmpeg: !!merged.ffmpeg });
             const audioB = await readAudio(fileB, { downmix: !!merged.downmix, ffmpeg: !!merged.ffmpeg });
+            ensureMatchingSampleRates(audioA.sampleRate, audioB.sampleRate);
             const aligned = alignSignals(audioA, audioB, { maxOffsetSec: maxOffset });
             const metrics = computeMetrics(aligned.a, aligned.b, audioA.sampleRate);
             results.push({ fileA, fileB, metrics });
